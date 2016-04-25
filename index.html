@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+<title>ArcGIS Online Items</title>
+
+<link rel="stylesheet" href="//js.arcgis.com/3.16compact/dijit/themes/claro/claro.css">
+<style>
+  html, body {
+    font-family: Lucida Sans, Lucida Grande, Arial !important;
+    font-size: 14px;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+  }
+  .esri-item-container {
+    float: left;
+    text-align: center;
+    padding: 10px;
+    width: 204px;
+    display: inline-block;
+  }
+
+
+  .esri-item-gallery .esri-null-image {
+    line-height: 133px;
+    text-align: center;
+    color: #999999;
+  }
+
+  .esri-item-gallery .esri-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .esri-item-gallery .esri-null-title {
+    color: #999999;
+  }
+  .esri-item-container .esri-image {
+    width: 200px;
+    height: 133px;
+    border: 2px solid gray;
+    border-radius: 5px;
+  }
+
+  .groupid{
+    display: inline-block;
+  }
+
+  .groupcontainer{
+    display: inline-block;
+    clear: left;
+    margin: 10px 0px;
+    border: 2px solid #797979;
+    width: 80%;
+    border-radius: 5px;
+    text-align: left;
+  }
+  .contentThumbImage {
+    float: left;
+    width: 65px;
+    height: 65px;
+    margin: 10px 15px 5px 10px;
+    overflow: hidden;
+  }
+  .action {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+.groupcontainer:hover {
+	background-color: #f3f3f3;
+	cursor: pointer;
+}
+
+.esri-item-container:hover {
+	background-color: #f3f3f3;
+}
+
+  #orgbanner{
+    -webkit-border-radius: 0 0 10px 10px;
+    -moz-border-radius: 0 0 10px 10px;
+    -o-border-radius: 0 0 10px 10px;
+    border-radius: 0 0 10px 10px;
+    margin-top: 0;
+    max-width:80%;
+    min-width:80%;
+    max-height:100%;
+    border-radius: 10px;
+  }
+
+  #footerContent{
+    float: right;
+    padding-bottom: 15px;
+    width:80%;
+    display: inline-block;
+
+  }
+</style>
+
+<script src="//js.arcgis.com/3.16compact/"></script>
+<script>
+  require([
+
+"dojo/dom-construct","dojo/on","dojo/query",
+
+    "esri/arcgis/Portal", "esri/arcgis/OAuthInfo", "esri/IdentityManager",
+    "dojo/dom-style", "dojo/dom-attr", "dojo/dom", "dojo/on", "dojo/_base/array",
+    "dojo/domReady!"
+  ], function (
+
+domConstruct,on,query,
+
+arcgisPortal, OAuthInfo, esriId,
+    domStyle, domAttr, dom, on, arrayUtils){
+    var info = new OAuthInfo({
+      appId: "UnutgseU931qP4II",
+      // Uncomment the next line and update if using your own portal
+      portalUrl: "https://umn-egis.maps.arcgis.com",
+      // Uncomment the next line to prevent the user's signed in state from being shared
+      // with other apps on the same domain with the same authNamespace value.
+      //authNamespace: "portal_oauth_inline",
+      popup: false
+    });
+
+var clickedGroupId
+
+    esriId.registerOAuthInfos([info]);
+
+    esriId.checkSignInStatus(info.portalUrl + "/sharing").then(
+      function (){
+        displayItems();
+      }
+    ).otherwise(
+      function (){
+        // Anonymous view
+        domStyle.set("anonymousPanel", "display", "inline-block");
+        domStyle.set("personalizedPanel", "display", "none");
+      }
+    );
+
+    on(dom.byId("sign-in"), "click", function (){
+      console.log("click", arguments);
+      // user will be redirected to OAuth Sign In page
+      esriId.getCredential(info.portalUrl + "/sharing");
+    });
+
+    on(dom.byId("sign-out"), "click", function (){
+      esriId.destroyCredentials();
+      window.location.reload();
+    });
+
+//tf this function gets called on successful sign in
+    function displayItems(){
+      new arcgisPortal.Portal(info.portalUrl).signIn().then(
+        function (portalUser){
+          console.log("Signed in to the portal: ", portalUser);
+
+          domAttr.set("userId", "innerHTML", portalUser.fullName);
+          domStyle.set("anonymousPanel", "display", "none");
+          domStyle.set("personalizedPanel", "display", "block");
+
+        //tf comment this out, query for items later after we get groups  
+	//queryPortal(portalUser);
+	
+	//tf add
+	findArcGISGroup(portalUser);
+
+        }
+      ).otherwise(
+        function (error){
+          console.log("Error occurred while signing in: ", error);
+        }
+      );
+    }
+//tf this function gets called by displayItems(), whic gets called on successful login
+    function queryPortal(portalUser, groupid){
+clickedGroupId = groupid
+      var portal = portalUser.portal;
+
+      //See list of valid item types here:  http://www.arcgis.com/apidocs/rest/index.html?itemtypes.html
+      //See search reference here:  http://www.arcgis.com/apidocs/rest/index.html?searchreference.html
+      var queryParams = {
+	q: "tags: mapfolio, group: "+ groupid,
+        sortField: "title",
+        sortOrder: "asc",
+        num: 2000
+      };
+
+
+      portal.queryItems(queryParams).then(createGallery);
+    }
+
+    function createGallery(items){
+
+      //clear any existing items before re-adding itmes
+      domConstruct.empty(clickedGroupId);
+
+
+      var htmlFragment = "<br>";
+
+      arrayUtils.forEach(items.results, function (item){
+        
+	htmlFragment += (
+        "<div class=\"esri-item-container\">" +     
+        (
+          item.thumbnailUrl ?
+          "<div class=\"esri-image\" style=\"background-image:url(" + item.thumbnailUrl + ");\"></div>" :
+            "<div class=\"esri-image esri-null-image\">Thumbnail not available</div>"
+        ) +
+	(
+          item.title ?
+          "<div class=\"esri-title\">" + ("<a href='" + item.url + "' target='_bank'>"+item.title+"</a>" || "") + "</div>" :
+            "<div class=\"esri-title esri-null-title\">Title not available</div>"
+        ) +
+        "</div>"
+        );
+      });
+
+       domConstruct.place(htmlFragment, clickedGroupId,"last");
+      //dom.byId(clickedGroupId).innerHTML = htmlFragment;
+    }
+
+        //tf add find groups
+        function findArcGISGroup(portalUser) {
+	var portal = portalUser.portal;
+	console.log('now running findArcGISGroup');
+          var params = {
+            q: 'orgid: NEfPUcqTuMvqwoCp , tags:"mapfolio"',
+            sortField:'title',
+            sortOrder:'asc',
+            num:100  //max is 100
+          };
+ 	    console.log('data');
+          //portal.queryGroups(params).then(showGroupResults);
+          portal.queryGroups(params).then(function (data) {
+            showGroupResults(data);
+          });
+        }
+
+	function showGroupResults(response){
+		console.log('showGroupResults');
+		console.log(response);
+		arrayUtils.forEach(response.results, function (group){
+		  console.log('group')
+		  console.log(group)
+		  domConstruct.create("div", { class: 'groupcontainer', innerHTML: "<img class='contentThumbImage' src="+group.thumbnailUrl+" alt=NA><h3>" + group.title+"</h3><p>"+ group.description+"</P><div class='groupid' id="+ group.id +"></div>", onclick: function(){queryPortal(group.portal.user, group.id)}}, groupGallery);
+		});
+	}
+
+  });
+  </script>
+</head>
+
+<body class="claro" style="text-align: center;">
+
+  <div id="anonymousPanel" style="display: none; padding: 5px; padding-top: 10px; text-align: center; width: 80%;">
+    <span id="sign-in" class="action"><b>Sign In</b></span> to access content shared with you by members of the University of Minnesota Enterprise GIS. 
+  </div>
+
+  <div id="personalizedPanel" style="display: none; padding: 5px;padding-top: 10px; text-align: right; width: 80%;">
+    Welcome <span id="userId" style="font-weight: bold;"></span>
+    &nbsp;-&nbsp;
+    <span id="sign-out" class="action">Sign Out</span>
+  </div>
+  <div  style="width: 100%; text-align: center;">
+    <img id="orgbanner" src="https://umn-egis.maps.arcgis.com/sharing/accounts/self/resources/banner.jpg">
+  </div>
+  
+  <div id="groupGallery"  style="width: 100%; text-align: center;"></div>
+  
+  <div id="footer" style="width: 80%; text-align: center;">
+     <div id="footerContent"><hr>
+      Questions? Please refer to our <a href="https://egis.umn.edu/dev/tobias/mymapfolio4/FAQ.pdf" target="_blank">FAQ</a> or contact the site administrator at fimpe001@umn.edu or 612-626-8489.
+     </div>
+  </div> 
+
+</body>
+</html>
