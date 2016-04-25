@@ -178,13 +178,13 @@ var clickedGroupId
     }
 //tf this function gets called by displayItems(), whic gets called on successful login
     function queryPortal(portalUser, groupid){
-clickedGroupId = groupid
+      clickedGroupId = groupid
       var portal = portalUser.portal;
 
       //See list of valid item types here:  http://www.arcgis.com/apidocs/rest/index.html?itemtypes.html
       //See search reference here:  http://www.arcgis.com/apidocs/rest/index.html?searchreference.html
       var queryParams = {
-	q: "tags: mapfolio, group: "+ groupid,
+	      q: "tags: mapfolio, group: "+ groupid ,
         sortField: "title",
         sortOrder: "asc",
         num: 2000
@@ -192,6 +192,26 @@ clickedGroupId = groupid
 
 
       portal.queryItems(queryParams).then(createGallery);
+    }
+
+    //function returns the url that we want to access. to allow for additional item types add logic here
+    function buildLink(item){
+      console.log("nuw running buildLink")
+      console.log(item)
+      if (item.displayName === "Web Mapping Application"){
+        var link = item.url;
+      }
+      if (item.displayName === "Web Map"){
+        var link = item.portal.url + "/home/webmap/viewer.html?webmap=" + item.id;
+      }
+      if (item.displayName === "Web Scene"){
+        var link = item.portal.url + "/home/webscene/viewer.html?webscene=" + item.id;
+      }
+      if (item.displayName === "PDF"){
+        var link = item.itemDataUrl;
+      }
+      console.log(link)
+      return link
     }
 
     function createGallery(items){
@@ -203,7 +223,9 @@ clickedGroupId = groupid
       var htmlFragment = "<br>";
 
       arrayUtils.forEach(items.results, function (item){
+        console.log(item)
         
+
 	htmlFragment += (
         "<div class=\"esri-item-container\">" +     
         (
@@ -213,7 +235,7 @@ clickedGroupId = groupid
         ) +
 	(
           item.title ?
-          "<div class=\"esri-title\">" + ("<a href='" + item.url + "' target='_bank'>"+item.title+"</a>" || "") + "</div>" :
+          "<div class=\"esri-title\">" + ("<a href='" + buildLink(item) + "' target='_bank'>"+item.title+"</a>" || "") + "</div>" :
             "<div class=\"esri-title esri-null-title\">Title not available</div>"
         ) +
         "</div>"
