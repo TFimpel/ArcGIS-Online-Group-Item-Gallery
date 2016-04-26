@@ -22,20 +22,16 @@
     width: 204px;
     display: inline-block;
   }
-
-
   .esri-item-gallery .esri-null-image {
     line-height: 133px;
     text-align: center;
     color: #999999;
   }
-
   .esri-item-gallery .esri-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   .esri-item-gallery .esri-null-title {
     color: #999999;
   }
@@ -45,11 +41,9 @@
     border: 2px solid gray;
     border-radius: 5px;
   }
-
   .groupid{
     display: inline-block;
   }
-
   .groupcontainer{
     display: inline-block;
     clear: left;
@@ -72,14 +66,12 @@
     text-decoration: underline;
   }
 .groupcontainer:hover {
-	background-color: #f3f3f3;
-	cursor: pointer;
+  background-color: #f3f3f3;
+  cursor: pointer;
 }
-
 .esri-item-container:hover {
-	background-color: #f3f3f3;
+  background-color: #f3f3f3;
 }
-
   #orgbanner{
     -webkit-border-radius: 0 0 10px 10px;
     -moz-border-radius: 0 0 10px 10px;
@@ -91,29 +83,41 @@
     max-height:100%;
     border-radius: 10px;
   }
-
   #footerContent{
     float: right;
     padding-bottom: 15px;
     width:80%;
     display: inline-block;
+  }
+
+  .viewMembers{
+    text-align: right;
+    color: blue;
+    margin: 2px;
+    margin-right: 5px;
+  }
+
+  .userlist{
+    color: #797979;
+    font-size: 12px;    
+    margin: 2px;
+    margin-right: 5px;
+    margin-left: 5px;
+    text-align: right;
 
   }
+
 </style>
 
 <script src="//js.arcgis.com/3.16compact/"></script>
 <script>
-  require([
-
+  require(["dojo/dom-style",
 "dojo/dom-construct","dojo/on","dojo/query",
-
     "esri/arcgis/Portal", "esri/arcgis/OAuthInfo", "esri/IdentityManager",
     "dojo/dom-style", "dojo/dom-attr", "dojo/dom", "dojo/on", "dojo/_base/array",
     "dojo/domReady!"
-  ], function (
-
+  ], function (domStyle,
 domConstruct,on,query,
-
 arcgisPortal, OAuthInfo, esriId,
     domStyle, domAttr, dom, on, arrayUtils){
     var info = new OAuthInfo({
@@ -125,11 +129,10 @@ arcgisPortal, OAuthInfo, esriId,
       //authNamespace: "portal_oauth_inline",
       popup: false
     });
-
 var clickedGroupId
+var groupMembers = [{}];
 
     esriId.registerOAuthInfos([info]);
-
     esriId.checkSignInStatus(info.portalUrl + "/sharing").then(
       function (){
         displayItems();
@@ -141,34 +144,28 @@ var clickedGroupId
         domStyle.set("personalizedPanel", "display", "none");
       }
     );
-
     on(dom.byId("sign-in"), "click", function (){
       console.log("click", arguments);
       // user will be redirected to OAuth Sign In page
       esriId.getCredential(info.portalUrl + "/sharing");
     });
-
     on(dom.byId("sign-out"), "click", function (){
       esriId.destroyCredentials();
       window.location.reload();
     });
-
 //tf this function gets called on successful sign in
     function displayItems(){
       new arcgisPortal.Portal(info.portalUrl).signIn().then(
         function (portalUser){
           console.log("Signed in to the portal: ", portalUser);
-
           domAttr.set("userId", "innerHTML", portalUser.fullName);
           domStyle.set("anonymousPanel", "display", "none");
           domStyle.set("personalizedPanel", "display", "block");
-
         //tf comment this out, query for items later after we get groups  
-	//queryPortal(portalUser);
-	
-	//tf add
-	findArcGISGroup(portalUser);
-
+  //queryPortal(portalUser);
+  
+  //tf add
+  findArcGISGroup(portalUser);
         }
       ).otherwise(
         function (error){
@@ -180,19 +177,17 @@ var clickedGroupId
     function queryPortal(portalUser, groupid){
       clickedGroupId = groupid
       var portal = portalUser.portal;
-
       //See list of valid item types here:  http://www.arcgis.com/apidocs/rest/index.html?itemtypes.html
       //See search reference here:  http://www.arcgis.com/apidocs/rest/index.html?searchreference.html
       var queryParams = {
-	      q: "tags: mapfolio, group: "+ groupid ,
+        q: "tags: mapfolio, group: "+ groupid ,
         sortField: "title",
         sortOrder: "asc",
         num: 2000
       };
-
-
-      portal.queryItems(queryParams).then(createGallery);
+      portal.queryItems(queryParams).then(createGallery)
     }
+
 
     //function returns the url that we want to access. to allow for additional item types add logic here
     function buildLink(item){
@@ -213,27 +208,22 @@ var clickedGroupId
       console.log(link)
       return link
     }
-
     function createGallery(items){
-
       //clear any existing items before re-adding itmes
+
       domConstruct.empty(clickedGroupId);
-
-
       var htmlFragment = "<br>";
-
       arrayUtils.forEach(items.results, function (item){
         console.log(item)
         
-
-	htmlFragment += (
+        htmlFragment += (
         "<div class=\"esri-item-container\">" +     
         (
           item.thumbnailUrl ?
           "<div class=\"esri-image\" style=\"background-image:url(" + item.thumbnailUrl + ");\"></div>" :
             "<div class=\"esri-image esri-null-image\">Thumbnail not available</div>"
         ) +
-	(
+  (
           item.title ?
           "<div class=\"esri-title\">" + ("<a href='" + buildLink(item) + "' target='_bank'>"+item.title+"</a>" || "") + "</div>" :
             "<div class=\"esri-title esri-null-title\">Title not available</div>"
@@ -241,38 +231,58 @@ var clickedGroupId
         "</div>"
         );
       });
+       domConstruct.place(htmlFragment, clickedGroupId,"first");
 
-       domConstruct.place(htmlFragment, clickedGroupId,"last");
-      //dom.byId(clickedGroupId).innerHTML = htmlFragment;
+//build the footer of the group window, where group members can be viewed.
+       var groupFooterId = clickedGroupId +'_footer'
+       var groupMembersElem = clickedGroupId+"_viewMembers"
+
+          if (dojo.byId(groupMembersElem)) {
+            console.log('already exists')}else{
+
+          var htmlFragmentUsers = " "
+          arrayUtils.forEach(groupMembers[clickedGroupId]['users'], function(user){
+    htmlFragmentUsers += " &#9671;"+user
+  })
+
+            domConstruct.create("div", {class: 'viewMembers', id:groupMembersElem, innerHTML: "View Members", onclick: function(){
+              domConstruct.create("div", {class: "userlist", innerHTML: htmlFragmentUsers}, groupFooterId)
+              domStyle.set(groupMembersElem, {display:"none"});
+              }}, groupFooterId);
+     }
     }
 
         //tf add find groups
         function findArcGISGroup(portalUser) {
-	var portal = portalUser.portal;
-	console.log('now running findArcGISGroup');
+  var portal = portalUser.portal;
+  console.log('now running findArcGISGroup');
           var params = {
             q: 'orgid: NEfPUcqTuMvqwoCp , tags:"mapfolio"',
             sortField:'title',
             sortOrder:'asc',
             num:100  //max is 100
           };
- 	    console.log('data');
+      console.log('data');
           //portal.queryGroups(params).then(showGroupResults);
           portal.queryGroups(params).then(function (data) {
             showGroupResults(data);
           });
         }
-
-	function showGroupResults(response){
-		console.log('showGroupResults');
-		console.log(response);
-		arrayUtils.forEach(response.results, function (group){
-		  console.log('group')
-		  console.log(group)
-		  domConstruct.create("div", { class: 'groupcontainer', innerHTML: "<img class='contentThumbImage' src="+group.thumbnailUrl+" alt=NA><h3>" + group.title+"</h3><p>"+ group.description+"</P><div class='groupid' id="+ group.id +"></div>", onclick: function(){queryPortal(group.portal.user, group.id)}}, groupGallery);
-		});
-	}
-
+  function showGroupResults(response){
+    console.log('showGroupResults');
+    console.log(response);
+    arrayUtils.forEach(response.results, function (group){
+      console.log('group')
+      console.log(group)
+      domConstruct.create("div", { class: 'groupcontainer', innerHTML: "<img class='contentThumbImage' src="+group.thumbnailUrl+" alt=NA><h3>" + group.title+"</h3><p>"+ group.description+"</p><div class='groupid' id="+ group.id +"></div><div id="+group.id+"_footer" +" </div>", onclick: function(){queryPortal(group.portal.user, group.id)}}, groupGallery);
+      group.getMembers().then(function(members){
+        //write the group memmber properties to a json object
+        console.log(members)
+        var i = group.id
+        groupMembers[i] = members
+      })
+    });
+  }
   });
   </script>
 </head>
