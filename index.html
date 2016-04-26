@@ -218,7 +218,7 @@ var groupMembers = [{}];
         console.log(item)
         
         htmlFragment += (
-        "<div class=\"esri-item-container\">" +     
+        "<a href='" + buildLink(item) + "' target='_bank'><div class=\"esri-item-container\">" +     
         (
           item.thumbnailUrl ?
           "<div class=\"esri-image\" style=\"background-image:url(" + item.thumbnailUrl + ");\"></div>" :
@@ -229,7 +229,7 @@ var groupMembers = [{}];
           "<div class=\"esri-title\">" + ("<a href='" + buildLink(item) + "' target='_bank'>"+item.title+"</a>" || "") + "</div>" :
             "<div class=\"esri-title esri-null-title\">Title not available</div>"
         ) +
-        "</div>"
+        "</div></a>"
         );
       });
        domConstruct.place(htmlFragment, clickedGroupId,"first");
