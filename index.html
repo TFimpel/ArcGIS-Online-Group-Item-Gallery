@@ -38,6 +38,16 @@ display: inline-block;
     width: 204px;
     display: inline-block;
   }
+
+  .esri-item-container-public {
+    float: left;
+    text-align: center;
+    padding: 10px;
+    width: 204px;
+    display: inline-block;
+  }
+
+
   .esri-item-gallery .esri-null-image {
     line-height: 133px;
     text-align: center;
@@ -57,6 +67,14 @@ display: inline-block;
     border: 2px solid gray;
     border-radius: 5px;
   }
+
+  .esri-item-container-public .esri-image {
+    width: 200px;
+    height: 133px;
+    border: 2px solid gray;
+    border-radius: 5px;
+  }
+
   .groupid{
     display: inline-block;
   }
@@ -100,6 +118,7 @@ display: inline-block;
 }
 
 
+
 .esri-item-container:hover {
   background-color: #f3f3f3;
 }
@@ -121,6 +140,7 @@ display: inline-block;
     max-width: 1152px;
     width: 100%;
     height: auto;
+    margin: 15px;
   }
 
   .viewMembers{
@@ -317,7 +337,16 @@ var groupMembers = [{}];
     arrayUtils.forEach(response.results, function (group){
       console.log('group')
       console.log(group)
-      domConstruct.create("div", { class: 'groupcontainer', innerHTML: "<img class='contentThumbImage' src="+group.thumbnailUrl+" alt=NA><h3>" + group.title+"</h3><p style='margin: 6px;'>"+ group.description+"</p><div class='groupid' id="+ group.id +"></div><div  style='text-align: right'; id="+group.id+"_footer" +" </div>", onclick: function(){queryPortal(group.portal.user, group.id)}}, groupGallery);
+      domConstruct.create("div", { class: 'groupcontainer', innerHTML: "<img class='contentThumbImage' src="+group.thumbnailUrl+" alt=NA><h3 id='groupheading"+group.id+"' style='color: blue;'>" + group.title+"</h3><p style='margin: 6px;'>"+ group.description+"</p><div class='groupid' id="+ group.id +"></div><div  style='text-align: right'; id="+group.id+"_footer" +" </div>", onclick: function(e){
+var target = e.target;
+console.log('target')
+console.log(target)
+var elemId="groupheading"+group.id
+console.log(elemId);
+domStyle.set(elemId, {color:""});
+queryPortal(group.portal.user, group.id)
+}
+}, groupGallery);
       group.getMembers().then(function(members){
         //write the group memmber properties to a json object
         console.log(members)
@@ -375,11 +404,11 @@ var groupMembers = [{}];
     <!--hard code this stuff. cannot query unauthenticated-->
   <div id="publicGroup"  style="width: 100%; text-align: center; max-width: 1152px; margin: 0px auto;">
   <div class="publicgroupcontainer"><img class="contentThumbImage" src="https://umn-egis.maps.arcgis.com/sharing/rest/community/groups/8148d7e094154282994c6ff389ea1e1a/info/planning.jpg?token=775xIv4ju6yYlw1NfO2NwzPjcztMULppXzOlS2ZC4XDIermtGRZupXAhDogAZDoiuZc4cyZ06ZimmvWqOYOt4A7Zj3nkVDMu_Kt0RzVnImL01Bgo6qk70tChofv7rKEngx5K_nzm5Th10y0eiaxjf8fCgqbgbzSRBhiiWdhnRgYSSSBu1cmqhdK3nKGbiWfDrteOJHPQE0WcrB279uFuvw.." alt="NA"><h3>Featured Public Maps Group</h3><p style="margin: 6px;">Capitfdgs fdsg fdsfdgfds g fgds gfdg fdg fd s fdgfg fdsg sfdg fd gfd gfdsgfdgfdsg fdgfdsgsfdg</p><div class="groupid" id="groupidhere"></div><div style="text-align: right" ;="" id="groupidhere_footer" <="" div=""></div>
-     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
-     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
-     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
-     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
-     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
+     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container-public"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
+     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container-public"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
+     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container-public"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
+     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container-public"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
+     <div class="groupid"><br><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><div class="esri-item-container-public"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"><div class="esri-image esri-null-image">Thumbnail not available</div></a><div class="esri-title"><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank"></a><a href="https://umn-egis.maps.arcgis.com/apps/webappviewer/index.html?id=f41ab5afec584db798bf1849eaa8be0d" target="_bank">Six-Year Capital Plan Coordination (DRAFT April 2016)</a></div></div></div>
    </div>
   </div>
 
