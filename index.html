@@ -95,6 +95,7 @@
     color: blue;
     margin: 2px;
     margin-right: 5px;
+    display: inline-block;
   }
 
   .userlist{
@@ -274,7 +275,7 @@ var groupMembers = [{}];
     arrayUtils.forEach(response.results, function (group){
       console.log('group')
       console.log(group)
-      domConstruct.create("div", { class: 'groupcontainer', innerHTML: "<img class='contentThumbImage' src="+group.thumbnailUrl+" alt=NA><h3>" + group.title+"</h3><p>"+ group.description+"</p><div class='groupid' id="+ group.id +"></div><div id="+group.id+"_footer" +" </div>", onclick: function(){queryPortal(group.portal.user, group.id)}}, groupGallery);
+      domConstruct.create("div", { class: 'groupcontainer', innerHTML: "<img class='contentThumbImage' src="+group.thumbnailUrl+" alt=NA><h3>" + group.title+"</h3><p>"+ group.description+"</p><div class='groupid' id="+ group.id +"></div><div  style='text-align: right'; id="+group.id+"_footer" +" </div>", onclick: function(){queryPortal(group.portal.user, group.id)}}, groupGallery);
       group.getMembers().then(function(members){
         //write the group memmber properties to a json object
         console.log(members)
