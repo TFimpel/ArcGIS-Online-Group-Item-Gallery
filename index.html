@@ -86,6 +86,7 @@ display: inline-block;
     width: 94%;
     border-radius: 5px;
     text-align: left;
+min-width: 220px;
   }
 
 .publicgroupcontainer{
@@ -96,6 +97,7 @@ display: inline-block;
     width: 94%;
     border-radius: 5px;
     text-align: left;
+min-width: 220px;
   }
 
 
@@ -117,11 +119,15 @@ display: inline-block;
   cursor: pointer;
 }
 
-
+.groupcontainer:hover {
+    background-color: #F3F3F3;
+    cursor: pointer;
+}
 
 .esri-item-container:hover {
-  background-color: #f3f3f3;
+  background-color: '';
 }
+
   #orgbanner{
     -webkit-border-radius: 0 0 10px 10px;
     -moz-border-radius: 0 0 10px 10px;
@@ -132,13 +138,14 @@ display: inline-block;
     border-radius: 10px;
     max-width: 1152px;
     height: auto;
+    border: 1px solid rgba(121, 121, 121, 0.29);
   }
   #footerContent{
     float: right;
     padding-bottom: 15px;
     display: inline-block;
     max-width: 1152px;
-    width: 100%;
+    width: 94%;
     height: auto;
     margin: 15px;
   }
@@ -417,7 +424,7 @@ queryPortal(group.portal.user, group.id)
   
   <div id="footer" style="width: 100%; text-align: center;max-width: 1152px; margin: 0px auto;">
      <div id="footerContent">
-      Questions? Please refer to our <a href="https://egis.umn.edu/dev/tobias/mymapfolio4/FAQ.pdf" target="_blank">FAQ</a> or contact the site administrator at fimpe001@umn.edu or 612-626-8489.
+      Questions? Please refer to our <a href="https://egis.umn.edu/dev/tobias/mymapfolio4/FAQ.pdf" target="_blank"><b>FAQ</b></a> or contact the site administrator at fimpe001@umn.edu or 612-626-8489.
 <hr>     
 </div>
   </div> 
