@@ -310,7 +310,7 @@ var groupMembers = [{}];
           if (dojo.byId(groupMembersElem)) {
             console.log('already exists')}else{
 
-          var htmlFragmentUsers = groupMembers[clickedGroupId]['owner']
+          var htmlFragmentUsers = '<u>'+groupMembers[clickedGroupId]['owner']+'</u>'
           arrayUtils.forEach(groupMembers[clickedGroupId]['users'], function(user){
     htmlFragmentUsers += " &#9671;"+user
   })
