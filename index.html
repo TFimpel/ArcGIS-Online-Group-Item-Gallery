@@ -250,7 +250,7 @@ var groupMembers = [{}];
       //See list of valid item types here:  http://www.arcgis.com/apidocs/rest/index.html?itemtypes.html
       //See search reference here:  http://www.arcgis.com/apidocs/rest/index.html?searchreference.html
       var queryParams = {
-        q: "tags: mapfolio, group: "+ groupid ,
+        q: "tags: mappage, group: "+ groupid ,
         sortField: "title",
         sortOrder: "asc",
         num: 2000
@@ -327,7 +327,7 @@ var groupMembers = [{}];
   var portal = portalUser.portal;
   console.log('now running findArcGISGroup');
           var params = {
-            q: 'orgid: NEfPUcqTuMvqwoCp , tags:"mapfolio"',
+            q: 'orgid: NEfPUcqTuMvqwoCp , tags:"mappage"',
             sortField:'title',
             sortOrder:'asc',
             num:100  //max is 100
