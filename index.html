@@ -310,7 +310,7 @@ var groupMembers = [{}];
           if (dojo.byId(groupMembersElem)) {
             console.log('already exists')}else{
 
-          var htmlFragmentUsers = " "
+          var htmlFragmentUsers = groupMembers[clickedGroupId]['owner']
           arrayUtils.forEach(groupMembers[clickedGroupId]['users'], function(user){
     htmlFragmentUsers += " &#9671;"+user
   })
@@ -356,6 +356,7 @@ queryPortal(group.portal.user, group.id)
 }, groupGallery);
       group.getMembers().then(function(members){
         //write the group memmber properties to a json object
+        console.log('members')
         console.log(members)
         var i = group.id
         groupMembers[i] = members
